@@ -1,0 +1,4 @@
+"Autosave test"
+"^:Map Start	^0test"
+""
+nooverwrite
