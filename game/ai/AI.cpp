@@ -5,6 +5,10 @@ AI.cpp
 
 ================
 */
+//#include <chrono> //I ADDED THIS
+//#include <thread> //I ADDED THIS
+//#include <windows.h> //I ADDED THIS
+
 
 #include "../../idlib/precompiled.h"
 #pragma hdrstop
@@ -1808,14 +1812,115 @@ void idAI::Activate( idEntity *activator ) {
 idAI::TalkTo
 =====================
 */
+int pHealth = 0;
+int coins = 0;
+
 void idAI::TalkTo( idActor *actor ) {
 
 	// jshepard: the dead do not speak.
 	if ( aifl.dead )
 		return;
+	/*
+	if (idStr::Icmp(ent->GetEntityDefName(), "minigameNPC")) {
+		gameLocal.Printf("YOU FOUND MINIGAME NPC!");
+	}
+	
+	const idKeyValue* kv;
+
+	kv = spawnArgs.MatchPrefix("char", NULL);
+	while (kv) {
+		idEntity* ent = gameLocal.FindEntity(kv->GetValue());
+		if (ent) {
+			if (idStr::Icmp(ent->GetEntityDefName(), "char_marine")) {
+				gameLocal.Printf("YOU FOUND MINIGAME NPC!");
+			}
+		}
+		kv = spawnArgs.MatchPrefix("char", kv);
+	}
+	*/
+	//idEntity* entity;
+	idPlayer* player;
+	//auto player = gameLocal.GetLocalPlayer();
 
 	ExecScriptFunction( funcs.onclick );
+	//auto player = gameLocal.GetLocalPlayer();
+	//gameLocal.Printf("you clicked on the guy");
 
+	auto badMsg1 = "What is this?";
+	auto badMsg2 = "Yikes";
+	auto badMsg3 = "where da sauce?";
+
+	auto goodMsg1 = "Looks great!";
+	auto goodMsg2 = "Thanks!";
+	auto goodMsg3 = "Wonderful!";
+	int x = gameLocal.random.RandomInt(3);
+	//player->hud->SetStateString("visible", "1");
+
+	if (player->health < 100 - pHealth) {
+		pHealth = pHealth + 25;
+		//gameLocal.Printf("player damaged");
+		if (x == 1) {
+			player->hud->SetStateString("messageText", badMsg1);
+		}
+		else if (x == 2) {
+			player->hud->SetStateString("messageText", badMsg2);
+		}
+		else if (x <= 4) {
+			player->hud->SetStateString("messageText", badMsg3);
+		}
+	}
+	else {
+		coins++;
+		//gameLocal.Printf("coins updated!");
+		auto tempCoin = player->hud->GetStateInt("coins", "");
+		if (tempCoin < coins) {	
+			coins = tempCoin + 1;
+			player->hud->SetStateInt("coins", coins);
+			if (x == 1) {
+				player->hud->SetStateString("messageText", goodMsg1);
+			}
+			else if (x == 2) {
+				player->hud->SetStateString("messageText", goodMsg2);
+			}
+			else if (x == 3) {
+				player->hud->SetStateString("messageText", goodMsg3);
+			}
+		}
+		else {
+			player->hud->SetStateInt("coins", coins);
+			if (x == 1) {
+				player->hud->SetStateString("messageText", goodMsg1);
+			}
+			else if (x == 2) {
+				player->hud->SetStateString("messageText", goodMsg2);
+			}
+			else if (x == 3) {
+				player->hud->SetStateString("messageText", goodMsg3);
+			}
+		}
+	}
+	//using namespace std::this_thread; // sleep_for, sleep_until
+	//using namespace std::chrono; // nanoseconds, system_clock, seconds
+	//sleep_for(seconds(2));
+
+	//Sleep(2000);
+	
+	/*
+	for (int i = 0; i < gameLocal.numClients; i++) {
+		if (gameLocal.entities[i]) {
+			idPlayer* player = static_cast<idPlayer*>(gameLocal.entities[i]);
+			const idKeyValue* kv = spawnArgs.MatchPrefix("weapon", NULL);
+			while (kv) {
+				player->RemoveWeapon(kv->GetValue());
+				kv = spawnArgs.MatchPrefix("weapon", kv);
+			}
+			// RAVEN BEGIN
+			// bdube: default to initial weapon
+			//player->SelectWeapon(0, true);
+			// RAVEN END
+		}
+	}
+	*/
 	// Cant talk when already talking
 	if ( aifl.action || IsSpeaking ( ) || !aiManager.CheckTeamTimer ( team, AITEAMTIMER_ACTION_TALK ) ) {
 		return;

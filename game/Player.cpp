@@ -1848,6 +1848,8 @@ void idPlayer::Spawn( void ) {
 
 		if ( spawnArgs.GetString( "hud", "", temp ) ) {
 			hud = uiManager->FindGui( temp, true, false, true );
+			overlayHud = uiManager->FindGui("guitest1", true, false, true );
+			gameLocal.Printf("hud here");
 		} else {
 			gameLocal.Warning( "idPlayer::Spawn() - No hud for player." );
 		}
@@ -7327,6 +7329,9 @@ void idPlayer::UpdateFocusCharacter( idEntity* newEnt ) {
 	if ( !cursor ) {
 		return;
 	}
+	//if (common->GetLocalizedString(newEnt->spawnArgs.GetString("npc_name", "")) == "npc1") {
+	//	cursor->SetStateString("npcdesc", "BRUH MOMENTUM");
+	//}
 	// Handle character interaction
 	cursor->SetStateString( "npc", common->GetLocalizedString(newEnt->spawnArgs.GetString( "npc_name", "Joe" )) );
 	cursor->SetStateString( "npcdesc", common->GetLocalizedString(newEnt->spawnArgs.GetString( "npc_description", "" )) );

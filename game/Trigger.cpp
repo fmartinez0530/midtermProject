@@ -420,6 +420,24 @@ idTrigger_Multi::TriggerAction
 void idTrigger_Multi::TriggerAction( idEntity *activator ) {
 // RAVEN BEGIN
 // jdischler: added for Aweldon.  The trigger, when activated, will call the listed func with all attached targets, then return.
+	auto nameTrig = name.c_str();
+	//gameLocal.Printf(nameTrig);
+	if (nameTrig == "trigger_multiple_gui") {
+		gameLocal.Printf("GUI TEST HERE!");
+	}
+
+	/*
+	if (spawnArgs.GetString("isGUI", "")) {
+		idPlayer* player;
+		gameLocal.Printf("GUI HERE!");
+		//auto coin = player->hud->GetStateInt("coins", "");
+		player->hud->SetStateInt("coins", 0);
+	}
+	*/
+	//if (nameTrig == "trigger_multiple_gui") {
+		
+	//}
+
 	if ( spawnArgs.GetBool( "_callWithTargets", "0" )) 
 	{
 		idEntity *ent;
@@ -434,6 +452,18 @@ void idTrigger_Multi::TriggerAction( idEntity *activator ) {
 		}
 		return;
 	}
+
+	if (spawnArgs.GetBool("isGUI", "0")) {
+		//gameLocal.Printf("GUI HERE!");
+		idPlayer* player;
+		auto coin = player->hud->GetStateInt("coins", "");
+		if (coin > 2) {
+			player->hud->SetStateInt("coins", coin - 3);
+		}
+		
+	}
+
+
 // RAVEN END
 	ActivateTargets( triggerWithSelf ? this : activator );
 	CallScript( triggerWithSelf ? this : activator );
